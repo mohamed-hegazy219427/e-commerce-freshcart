@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FreshCart
+
+A modern e-commerce web application built with Next.js 15, TypeScript, and Tailwind CSS v4. Consumes the [Route Academy E-Commerce API](https://ecommerce.routemisr.com/api/v1).
+
+## Tech Stack
+
+| Concern | Library |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS v4 + shadcn/ui |
+| Server state | TanStack Query v5 |
+| Client state | Zustand v5 |
+| Forms | React Hook Form + Zod |
+| HTTP | Axios |
+| Toasts | Sonner |
+| Carousel | Embla Carousel |
+| URL state | nuqs v2 |
+| Icons | Lucide React |
+
+## Features
+
+- **Product listing** — grid with debounced search, brand/price/rating filters, and pagination — all state lives in the URL
+- **Product detail** — image carousel with thumbnails, ratings, and add-to-cart
+- **Brands** — browse all brands and view brand-filtered products
+- **Cart** — quantity controls, remove items, order summary, persistent via API
+- **Checkout** — shipping address form, cash on delivery or online payment (Stripe)
+- **Auth** — login and register with form validation, JWT stored in localStorage
+- **Protected routes** — client-side guard, no Next.js middleware
+- **Responsive** — mobile-first layout with sticky navbar and cart badge
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── (auth)/
+│   │   ├── login/page.tsx
+│   │   └── register/page.tsx
+│   ├── (shop)/
+│   │   ├── layout.tsx          ← Navbar + Footer wrapper
+│   │   ├── page.tsx            ← Home (products + search + filters)
+│   │   ├── brands/page.tsx
+│   │   ├── brands/[id]/page.tsx
+│   │   ├── products/[id]/page.tsx
+│   │   ├── cart/page.tsx
+│   │   ├── checkout/page.tsx
+│   │   └── profile/page.tsx
+│   ├── layout.tsx              ← Root layout (Providers)
+│   ├── not-found.tsx
+│   └── globals.css
+├── components/
+│   ├── ui/                     ← shadcn/ui generated components
+│   ├── navbar.tsx
+│   ├── footer.tsx
+│   ├── product-card.tsx
+│   ├── product-grid.tsx
+│   ├── home-carousel.tsx
+│   ├── product-carousel.tsx
+│   ├── search-bar.tsx
+│   ├── search-filters.tsx
+│   ├── cart-item-row.tsx
+│   └── protected-route.tsx
+└── lib/
+    ├── api/                    ← axios instance + endpoint functions
+    ├── store/                  ← Zustand auth & cart stores
+    ├── validations/            ← Zod schemas
+    ├── types/api.ts            ← TypeScript interfaces
+    └── providers.tsx           ← TanStack Query + Sonner + NuqsAdapter
+```
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Base URL: `https://ecommerce.routemisr.com/api/v1`
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Authentication uses a `token` header (not `Authorization: Bearer`). The token is stored in `localStorage` under the key `"token"` and injected automatically by the Axios interceptor.

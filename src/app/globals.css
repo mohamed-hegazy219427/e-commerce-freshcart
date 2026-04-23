@@ -123,9 +123,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-montserrat), sans-serif;
+    background-image: url('/assets/light-pattern.svg');
   }
   html {
     @apply font-sans;
+  }
+  nav, footer {
+    background-color: #eee;
   }
 }
 

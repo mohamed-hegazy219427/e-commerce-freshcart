@@ -5,7 +5,7 @@ import { ShoppingCart, Trash2 } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart-store";
 import { CartItemRow } from "@/components/cart-item-row";
 import { ProtectedRoute } from "@/components/protected-route";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -22,9 +22,7 @@ function CartContent() {
         <ShoppingCart size={64} className="text-muted-foreground" strokeWidth={1} />
         <h1 className="text-2xl font-bold">Your cart is empty</h1>
         <p className="text-muted-foreground">Add some products to get started.</p>
-        <Button asChild>
-          <Link href="/">Browse products</Link>
-        </Button>
+        <Link href="/" className={buttonVariants()}>Browse products</Link>
       </div>
     );
   }
@@ -71,9 +69,7 @@ function CartContent() {
               <span>Total</span>
               <span>${total}</span>
             </div>
-            <Button className="w-full" size="lg" asChild>
-              <Link href="/checkout">Proceed to checkout</Link>
-            </Button>
+            <Link href="/checkout" className={buttonVariants({ size: "lg" }) + " w-full"}>Proceed to checkout</Link>
           </CardContent>
         </Card>
       </div>

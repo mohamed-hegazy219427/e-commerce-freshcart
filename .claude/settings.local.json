@@ -11,7 +11,8 @@
       "Bash(robocopy \"g:\\\\Route\\\\React\\\\e-commerce-freshcart-v2\" \"g:\\\\Route\\\\React\\\\e-commerce-freshcart\\\\e-commerce-freshcart-v2\" /E /XD node_modules .git /NJH /NJS)",
       "Bash(robocopy \"g:\\\\Route\\\\React\\\\e-commerce-freshcart-v2\" \"g:\\\\Route\\\\React\\\\e-commerce-freshcart\\\\e-commerce-freshcart-v2\" /E /XD node_modules .git)",
       "Bash(echo \"Exit: $?\")",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(npm uninstall *)"
     ]
   }
 }
