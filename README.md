@@ -1,46 +1,85 @@
-
-
 # FreshCart
 
-FreshCart is a React e-commerce website that allows users to browse and purchase products from various categories and brands. It is inspired by the [[FreshCart HTML template](https://themes.getbootstrap.com/product/freshcart-ecommerce-html-template/)] and uses some of the components and styles from it. You can view the live demo of the website on [[Netlify](https://mohamedhegazy-freshcart.netlify.app/)].
+A modern e-commerce web application built with Next.js 15, TypeScript, and Tailwind CSS v4. Consumes the [Route Academy E-Commerce API](https://ecommerce.routemisr.com/api/v1).
+
+## Tech Stack
+
+| Concern | Library |
+|---|---|
+| Framework | Next.js 15 (App Router) |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS v4 + shadcn/ui |
+| Server state | TanStack Query v5 |
+| Client state | Zustand v5 |
+| Forms | React Hook Form + Zod |
+| HTTP | Axios |
+| Toasts | Sonner |
+| Carousel | Embla Carousel |
+| URL state | nuqs v2 |
+| Icons | Lucide React |
 
 ## Features
 
-- Register / login page
-- Display all products on the home page
-- Filter products by category, brand, price, rating, etc.
-- Add products to the cart
-- Delete products from the cart
-- Update the quantity of products in the cart
-- Checkout page with payment methods (online or cash)
-- Order confirmation page
-- User profile page
-- Responsive design
+- **Product listing** — grid with debounced search, brand/price/rating filters, and pagination — all state lives in the URL
+- **Product detail** — image carousel with thumbnails, ratings, and add-to-cart
+- **Brands** — browse all brands and view brand-filtered products
+- **Cart** — quantity controls, remove items, order summary, persistent via API
+- **Checkout** — shipping address form, cash on delivery or online payment (Stripe)
+- **Auth** — login and register with form validation, JWT stored in localStorage
+- **Protected routes** — client-side guard, no Next.js middleware
+- **Responsive** — mobile-first layout with sticky navbar and cart badge
 
+## Project Structure
 
-## Technologies
+```
+src/
+├── app/
+│   ├── (auth)/
+│   │   ├── login/page.tsx
+│   │   └── register/page.tsx
+│   ├── (shop)/
+│   │   ├── layout.tsx          ← Navbar + Footer wrapper
+│   │   ├── page.tsx            ← Home (products + search + filters)
+│   │   ├── brands/page.tsx
+│   │   ├── brands/[id]/page.tsx
+│   │   ├── products/[id]/page.tsx
+│   │   ├── cart/page.tsx
+│   │   ├── checkout/page.tsx
+│   │   └── profile/page.tsx
+│   ├── layout.tsx              ← Root layout (Providers)
+│   ├── not-found.tsx
+│   └── globals.css
+├── components/
+│   ├── ui/                     ← shadcn/ui generated components
+│   ├── navbar.tsx
+│   ├── footer.tsx
+│   ├── product-card.tsx
+│   ├── product-grid.tsx
+│   ├── home-carousel.tsx
+│   ├── product-carousel.tsx
+│   ├── search-bar.tsx
+│   ├── search-filters.tsx
+│   ├── cart-item-row.tsx
+│   └── protected-route.tsx
+└── lib/
+    ├── api/                    ← axios instance + endpoint functions
+    ├── store/                  ← Zustand auth & cart stores
+    ├── validations/            ← Zod schemas
+    ├── types/api.ts            ← TypeScript interfaces
+    └── providers.tsx           ← TanStack Query + Sonner + NuqsAdapter
+```
 
-- JavaScript
-- Bootstrap 5
-- React.js
-- Formik
-- Axios
-- Yup
-- React Router DOM
-- Bootstrap Toast
-- Slick Carousel
-- HTML5
-- CSS3
+## Getting Started
 
-## Installation
+```bash
+npm install
+npm run dev
+```
 
-To run this project, you need to have Node.js and npm installed on your system.
+Open [http://localhost:3000](http://localhost:3000).
 
-- Clone the repository: `git clone https://github.com/MohamedHegazy2020/e-commerce-freshcart.git`
-- Install the dependencies: `npm install`
-- Start the development server: `npm start`
-- Open http://localhost:3000 to view the app in your browser.
+## API
 
-## Credits
+Base URL: `https://ecommerce.routemisr.com/api/v1`
 
-This project is based on the [FreshCart HTML template] by [Bootstrap Themes](https://themes.getbootstrap.com/product/freshcart-ecommerce-html-template/).
+Authentication uses a `token` header (not `Authorization: Bearer`). The token is stored in `localStorage` under the key `"token"` and injected automatically by the Axios interceptor.

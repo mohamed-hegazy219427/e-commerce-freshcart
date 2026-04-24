@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//g/Route/React/**)",
+      "Bash(npx create-next-app@latest e-commerce-freshcart-v2 --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-turbopack)",
+      "Bash(npm install *)",
+      "Bash(npx shadcn@latest init --style default --base-color zinc --css-variables -y)",
+      "Bash(npx shadcn@latest init --help)",
+      "Bash(npx shadcn@latest init -d)",
+      "Bash(npx shadcn@latest add button card badge input label skeleton select slider sheet dialog dropdown-menu separator avatar -y)",
+      "Bash(robocopy \"g:\\\\Route\\\\React\\\\e-commerce-freshcart-v2\" \"g:\\\\Route\\\\React\\\\e-commerce-freshcart\\\\e-commerce-freshcart-v2\" /E /XD node_modules .git /NJH /NJS)",
+      "Bash(robocopy \"g:\\\\Route\\\\React\\\\e-commerce-freshcart-v2\" \"g:\\\\Route\\\\React\\\\e-commerce-freshcart\\\\e-commerce-freshcart-v2\" /E /XD node_modules .git)",
+      "Bash(echo \"Exit: $?\")",
+      "Bash(git add *)",
+      "Bash(npm uninstall *)",
+      "WebFetch(domain:documenter.getpostman.com)",
+      "Bash(mv components/cart-item-row.tsx components/CartItemRow.tsx)",
+      "Bash(mv components/home-carousel.tsx components/HomeCarousel.tsx)",
+      "Bash(mv components/product-card.tsx components/ProductCard.tsx)",
+      "Bash(mv components/product-carousel.tsx components/ProductCarousel.tsx)",
+      "Bash(mv components/product-grid.tsx components/ProductGrid.tsx)",
+      "Bash(xargs sed *)",
+      "Bash(mv components/navbar.tsx components/Navbar.tsx)",
+      "Bash(mv components/footer.tsx components/Footer.tsx)"
+    ]
+  }
+}
