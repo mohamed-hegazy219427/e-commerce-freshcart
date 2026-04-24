@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useQueryState, parseAsInteger, parseAsFloat } from "nuqs";
 import { ChevronLeft, ChevronRight, X, SlidersHorizontal } from "lucide-react";
 import { useProducts } from "@/lib/hooks/useProducts";
@@ -22,6 +23,14 @@ const SORT_OPTIONS = [
 ];
 
 export default function HomePage() {
+  return (
+    <Suspense>
+      <HomePageContent />
+    </Suspense>
+  );
+}
+
+function HomePageContent() {
   const [keyword] = useQueryState("keyword", { defaultValue: "" });
   const [brandId, setBrandId] = useQueryState("brand", { defaultValue: "" });
   const [categoryId, setCategoryId] = useQueryState("category", { defaultValue: "" });

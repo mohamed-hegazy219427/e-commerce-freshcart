@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useParams } from "next/navigation";
 import { useQueryState, parseAsInteger } from "nuqs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -8,7 +9,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { ProductGridSkeleton } from "@/components/ProductGrid";
 import { Button } from "@/components/ui/button";
 
-export default function BrandProductsPage() {
+function BrandProductsContent() {
   const { id } = useParams<{ id: string }>();
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
@@ -49,5 +50,13 @@ export default function BrandProductsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function BrandProductsPage() {
+  return (
+    <Suspense>
+      <BrandProductsContent />
+    </Suspense>
   );
 }

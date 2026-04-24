@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -12,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function VerifyResetCodePage() {
+function VerifyResetCodeForm() {
   const router = useRouter();
   const email = useSearchParams().get("email") ?? "";
   const verify = useVerifyResetCode();
@@ -70,5 +71,13 @@ export default function VerifyResetCodePage() {
         </Link>
       </div>
     </AuthCard>
+  );
+}
+
+export default function VerifyResetCodePage() {
+  return (
+    <Suspense>
+      <VerifyResetCodeForm />
+    </Suspense>
   );
 }

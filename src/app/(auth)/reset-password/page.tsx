@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
@@ -11,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const email = useSearchParams().get("email") ?? "";
   const reset = useResetPassword();
 
@@ -49,5 +50,13 @@ export default function ResetPasswordPage() {
         </Button>
       </form>
     </AuthCard>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
