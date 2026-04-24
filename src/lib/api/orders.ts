@@ -1,9 +1,9 @@
 import api from "./axios";
 import type { OrdersResponse, Order, CheckoutSessionResponse } from "@/lib/types/api";
 
-export async function getUserOrders(): Promise<OrdersResponse> {
-  const { data } = await api.get<OrdersResponse>("/orders/userOrders");
-  return data;
+export async function getUserOrders(userId: string): Promise<Order[]> {
+  const { data } = await api.get<Order[] | OrdersResponse>(`/orders/user/${userId}`);
+  return Array.isArray(data) ? data : (data.data ?? []);
 }
 
 export async function getOrder(orderId: string): Promise<Order> {

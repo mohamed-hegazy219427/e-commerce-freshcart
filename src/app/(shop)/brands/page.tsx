@@ -1,18 +1,13 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
-import { getBrands } from "@/lib/api/brands";
+import { useBrands } from "@/lib/hooks/useBrands";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export default function BrandsPage() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["brands"],
-    queryFn: getBrands,
-    staleTime: Infinity,
-  });
+  const { data, isLoading } = useBrands();
 
   if (isLoading) {
     return (

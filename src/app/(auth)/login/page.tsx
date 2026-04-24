@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { loginSchema, type LoginFormValues } from "@/lib/validations/login";
 import { useLogin } from "@/lib/hooks/useAuth";
 import { useAuthStore } from "@/lib/store/authStore";
+import { AuthCard } from "@/components/AuthCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,44 +27,39 @@ export default function LoginPage() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight">Sign in</h1>
-          <p className="mt-2 text-sm text-muted-foreground">
-            New here?{" "}
-            <Link href="/register" className="text-primary underline-offset-4 hover:underline">
-              Create an account
-            </Link>
-          </p>
+    <AuthCard>
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Welcome back</h1>
+        <p className="text-sm text-muted-foreground">
+          Don&apos;t have an account?{" "}
+          <Link href="/register" className="text-primary font-medium underline-offset-4 hover:underline">
+            Sign up free
+          </Link>
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit((v) => login.mutate(v))} className="space-y-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="email">Email address</Label>
+          <Input id="email" type="email" placeholder="you@example.com" {...register("email")} />
+          {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
         </div>
 
-        <form onSubmit={handleSubmit((v) => login.mutate(v))} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="you@example.com" {...register("email")} />
-            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label>
+            <Link href="/forgot-password" className="text-xs text-muted-foreground hover:text-primary underline-offset-4 hover:underline">
+              Forgot password?
+            </Link>
           </div>
+          <Input id="password" type="password" placeholder="••••••••" {...register("password")} />
+          {errors.password && <p className="text-xs text-destructive">{errors.password.message}</p>}
+        </div>
 
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                href="/forgot-password"
-                className="text-xs text-muted-foreground hover:text-primary underline-offset-4 hover:underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
-            <Input id="password" type="password" {...register("password")} />
-            {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
-          </div>
-
-          <Button type="submit" className="w-full" disabled={login.isPending}>
-            {login.isPending ? "Signing in…" : "Sign in"}
-          </Button>
-        </form>
-      </div>
-    </div>
+        <Button type="submit" className="w-full h-11 text-base" disabled={login.isPending}>
+          {login.isPending ? "Signing in…" : "Sign in"}
+        </Button>
+      </form>
+    </AuthCard>
   );
 }

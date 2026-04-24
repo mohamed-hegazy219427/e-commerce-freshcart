@@ -19,7 +19,9 @@
       "Bash(mv components/product-card.tsx components/ProductCard.tsx)",
       "Bash(mv components/product-carousel.tsx components/ProductCarousel.tsx)",
       "Bash(mv components/product-grid.tsx components/ProductGrid.tsx)",
-      "Bash(xargs sed *)"
+      "Bash(xargs sed *)",
+      "Bash(mv components/navbar.tsx components/Navbar.tsx)",
+      "Bash(mv components/footer.tsx components/Footer.tsx)"
     ]
   }
 }

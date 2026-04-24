@@ -1,10 +1,9 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 import { useQueryState, parseAsInteger } from "nuqs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getBrands, getBrandProducts } from "@/lib/api/brands";
+import { useBrands, useBrandProducts } from "@/lib/hooks/useBrands";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductGridSkeleton } from "@/components/ProductGrid";
 import { Button } from "@/components/ui/button";
@@ -13,17 +12,8 @@ export default function BrandProductsPage() {
   const { id } = useParams<{ id: string }>();
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
-  const { data: brandsData } = useQuery({
-    queryKey: ["brands"],
-    queryFn: getBrands,
-    staleTime: Infinity,
-  });
-
-  const { data, isLoading } = useQuery({
-    queryKey: ["brandProducts", id, page],
-    queryFn: () => getBrandProducts(id, page),
-    enabled: !!id,
-  });
+  const { data: brandsData } = useBrands();
+  const { data, isLoading } = useBrandProducts(id, page);
 
   const brand = brandsData?.data.find((b) => b._id === id);
   const products = data?.data ?? [];

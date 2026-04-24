@@ -22,7 +22,7 @@ export const keys = {
     all: ["wishlist"] as const,
   },
   orders: {
-    all: ["orders"] as const,
+    all: (userId: string) => ["orders", userId] as const,
     detail: (id: string) => ["orders", "detail", id] as const,
   },
 };

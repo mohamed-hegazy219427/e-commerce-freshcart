@@ -1,11 +1,6 @@
 import api from "./axios";
 import type { UserProfileResponse } from "@/lib/types/api";
 
-export async function getMe(): Promise<UserProfileResponse> {
-  const { data } = await api.get<UserProfileResponse>("/user/getMe");
-  return data;
-}
-
 export async function updateProfile(payload: {
   name: string;
   email: string;

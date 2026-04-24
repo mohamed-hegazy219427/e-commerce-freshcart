@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { ShoppingCart, User, LogOut, Package, Home, Tag } from "lucide-react";
+import { ShoppingCart, User, LogOut, Package, Home, Tag, Heart } from "lucide-react";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useCart } from "@/lib/hooks/useCart";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -103,8 +103,11 @@ export function Navbar() {
                 <DropdownMenuItem onClick={() => router.push("/profile")} className="cursor-pointer">
                   <User size={14} className="mr-2" /> Profile
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => router.push("/cart")} className="cursor-pointer">
+                <DropdownMenuItem onClick={() => router.push("/orders")} className="cursor-pointer">
                   <Package size={14} className="mr-2" /> My Orders
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/wishlist")} className="cursor-pointer">
+                  <Heart size={14} className="mr-2" /> Wishlist
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive cursor-pointer">

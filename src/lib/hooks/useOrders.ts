@@ -9,11 +9,15 @@ import {
   createCashOrder,
 } from "@/lib/api/orders";
 import { keys } from "@/lib/api/queryKeys";
+import { useAuthStore } from "@/lib/store/authStore";
+import type { Order } from "@/lib/types/api";
 
 export function useOrders() {
-  return useQuery({
-    queryKey: keys.orders.all,
-    queryFn: getUserOrders,
+  const userId = useAuthStore((s) => s.user?.id ?? "");
+  return useQuery<Order[]>({
+    queryKey: keys.orders.all(userId),
+    queryFn: () => getUserOrders(userId),
+    enabled: !!userId,
     retry: false,
   });
 }
@@ -44,6 +48,7 @@ export function useCheckoutSession() {
 
 export function useCashOrder() {
   const qc = useQueryClient();
+  const userId = useAuthStore((s) => s.user?.id ?? "");
   return useMutation({
     mutationFn: ({
       cartId,
@@ -53,7 +58,7 @@ export function useCashOrder() {
       shippingAddress: { details: string; phone: string; city: string };
     }) => createCashOrder(cartId, shippingAddress),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: keys.orders.all });
+      qc.invalidateQueries({ queryKey: keys.orders.all(userId) });
       toast.success("Order placed successfully!");
     },
     onError: () => toast.error("Failed to place order"),
