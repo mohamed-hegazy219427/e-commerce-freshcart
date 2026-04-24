@@ -12,7 +12,14 @@
       "Bash(robocopy \"g:\\\\Route\\\\React\\\\e-commerce-freshcart-v2\" \"g:\\\\Route\\\\React\\\\e-commerce-freshcart\\\\e-commerce-freshcart-v2\" /E /XD node_modules .git)",
       "Bash(echo \"Exit: $?\")",
       "Bash(git add *)",
-      "Bash(npm uninstall *)"
+      "Bash(npm uninstall *)",
+      "WebFetch(domain:documenter.getpostman.com)",
+      "Bash(mv components/cart-item-row.tsx components/CartItemRow.tsx)",
+      "Bash(mv components/home-carousel.tsx components/HomeCarousel.tsx)",
+      "Bash(mv components/product-card.tsx components/ProductCard.tsx)",
+      "Bash(mv components/product-carousel.tsx components/ProductCarousel.tsx)",
+      "Bash(mv components/product-grid.tsx components/ProductGrid.tsx)",
+      "Bash(xargs sed *)"
     ]
   }
 }

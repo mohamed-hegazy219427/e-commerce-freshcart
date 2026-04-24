@@ -2,19 +2,29 @@
 
 import Link from "next/link";
 import { ShoppingCart, Trash2 } from "lucide-react";
-import { useCartStore } from "@/lib/store/cart-store";
-import { CartItemRow } from "@/components/cart-item-row";
-import { ProtectedRoute } from "@/components/protected-route";
+import { useCart, useClearCart } from "@/lib/hooks/useCart";
+import { CartItemRow } from "@/components/CartItemRow";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function CartContent() {
-  const items = useCartStore((s) => s.items);
-  const count = useCartStore((s) => s.count);
-  const total = useCartStore((s) => s.total);
-  const clearAll = useCartStore((s) => s.clearAll);
-  const isLoading = useCartStore((s) => s.isLoading);
+  const { data, isLoading } = useCart();
+  const clearCart = useClearCart();
+
+  const items = data?.data.products ?? [];
+  const count = data?.numOfCartItems ?? 0;
+  const total = data?.data.totalCartPrice ?? 0;
+
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-10 space-y-4">
+        {[1, 2, 3].map((i) => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -33,8 +43,8 @@ function CartContent() {
         <h1 className="text-2xl font-bold">Shopping Cart ({count})</h1>
         <Button
           variant="outline" size="sm" className="text-destructive border-destructive gap-1.5"
-          onClick={clearAll}
-          disabled={isLoading}
+          onClick={() => clearCart.mutate()}
+          disabled={clearCart.isPending}
         >
           <Trash2 size={14} /> Clear cart
         </Button>
@@ -69,7 +79,9 @@ function CartContent() {
               <span>Total</span>
               <span>${total}</span>
             </div>
-            <Link href="/checkout" className={buttonVariants({ size: "lg" }) + " w-full"}>Proceed to checkout</Link>
+            <Link href="/checkout" className={buttonVariants({ size: "lg" }) + " w-full"}>
+              Proceed to checkout
+            </Link>
           </CardContent>
         </Card>
       </div>

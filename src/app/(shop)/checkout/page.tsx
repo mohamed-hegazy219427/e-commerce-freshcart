@@ -2,10 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import { useCartStore } from "@/lib/store/cart-store";
-import { ProtectedRoute } from "@/components/protected-route";
-import api from "@/lib/api/axios";
+import { useCart } from "@/lib/hooks/useCart";
+import { useCheckoutSession, useCashOrder } from "@/lib/hooks/useOrders";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,47 +13,30 @@ import { Separator } from "@/components/ui/separator";
 import { CreditCard, Truck } from "lucide-react";
 
 function CheckoutContent() {
-  const cartId = useCartStore((s) => s.cartId);
-  const total = useCartStore((s) => s.total);
-  const clearAll = useCartStore((s) => s.clearAll);
   const router = useRouter();
+  const { data: cartData } = useCart();
+  const checkoutSession = useCheckoutSession();
+  const cashOrder = useCashOrder();
+
+  const cartId = cartData?.data._id ?? "";
+  const total = cartData?.data.totalCartPrice ?? 0;
 
   const [details, setDetails] = useState({ phone: "", city: "", address: "" });
-  const [isLoading, setIsLoading] = useState(false);
-
-  async function handleOnlinePayment() {
-    if (!cartId) return;
-    setIsLoading(true);
-    try {
-      const { data } = await api.post(
-        `/orders/checkout-session/${cartId}`,
-        { shippingAddress: details },
-        { params: { url: window.location.origin } }
-      );
-      window.location.href = data.session.url;
-    } catch {
-      toast.error("Payment setup failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
-  async function handleCashOrder() {
-    if (!cartId) return;
-    setIsLoading(true);
-    try {
-      await api.post(`/orders/${cartId}`, { shippingAddress: details });
-      await clearAll();
-      toast.success("Order placed successfully!");
-      router.push("/");
-    } catch {
-      toast.error("Order failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  }
-
   const isFormValid = details.phone && details.city && details.address;
+  const isLoading = checkoutSession.isPending || cashOrder.isPending;
+
+  const shippingAddress = {
+    phone: details.phone,
+    city: details.city,
+    details: details.address,
+  };
+
+  function handleCashOrder() {
+    cashOrder.mutate(
+      { cartId, shippingAddress },
+      { onSuccess: () => router.push("/") }
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-10 max-w-2xl">
@@ -99,7 +81,7 @@ function CheckoutContent() {
               </Button>
               <Button
                 className="gap-2" size="lg"
-                onClick={handleOnlinePayment}
+                onClick={() => checkoutSession.mutate({ cartId, shippingAddress })}
                 disabled={!isFormValid || isLoading}
               >
                 <CreditCard size={16} /> Pay online

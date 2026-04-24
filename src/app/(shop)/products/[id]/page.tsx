@@ -1,11 +1,11 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { ShoppingCart, Check, Star, Package } from "lucide-react";
-import { getProduct } from "@/lib/api/products";
-import { useCartStore } from "@/lib/store/cart-store";
-import { ProductCarousel } from "@/components/product-carousel";
+import { ShoppingCart, Check, Star, Package, Heart } from "lucide-react";
+import { useProduct } from "@/lib/hooks/useProducts";
+import { useCart, useAddToCart } from "@/lib/hooks/useCart";
+import { useWishlist, useToggleWishlist } from "@/lib/hooks/useWishlist";
+import { ProductCarousel } from "@/components/ProductCarousel";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,17 +14,14 @@ import { cn } from "@/lib/utils";
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const addItem = useCartStore((s) => s.addItem);
-  const isInCart = useCartStore((s) => s.isInCart);
-  const isLoading = useCartStore((s) => s.isLoading);
 
-  const { data: product, isLoading: pageLoading } = useQuery({
-    queryKey: ["product", id],
-    queryFn: () => getProduct(id),
-    enabled: !!id,
-  });
+  const { data: product, isLoading } = useProduct(id);
+  const { data: cartData } = useCart();
+  const { data: wishlistData } = useWishlist();
+  const addToCart = useAddToCart();
+  const toggleWishlist = useToggleWishlist();
 
-  if (pageLoading) {
+  if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-10">
         <div className="grid md:grid-cols-2 gap-10">
@@ -43,7 +40,9 @@ export default function ProductDetailPage() {
 
   if (!product) return null;
 
-  const inCart = isInCart(product._id);
+  const inCart = cartData?.data.products.some((p) => p.product._id === product._id) ?? false;
+  const inWishlist = wishlistData?.data.some((p) => p._id === product._id) ?? false;
+
   const discount = product.priceAfterDiscount
     ? Math.round(100 - (product.priceAfterDiscount / product.price) * 100)
     : null;
@@ -102,19 +101,30 @@ export default function ProductDetailPage() {
             <span>{product.sold} sold</span>
           </div>
 
-          <Button
-            size="lg"
-            className="w-full gap-2"
-            variant={inCart ? "secondary" : "default"}
-            disabled={isLoading || inCart}
-            onClick={() => !inCart && addItem(product._id)}
-          >
-            {inCart ? (
-              <><Check size={18} /> In your cart</>
-            ) : (
-              <><ShoppingCart size={18} /> Add to cart</>
-            )}
-          </Button>
+          <div className="flex gap-3">
+            <Button
+              size="lg"
+              className="flex-1 gap-2"
+              variant={inCart ? "secondary" : "default"}
+              disabled={addToCart.isPending || inCart}
+              onClick={() => !inCart && addToCart.mutate(product._id)}
+            >
+              {inCart ? (
+                <><Check size={18} /> In your cart</>
+              ) : (
+                <><ShoppingCart size={18} /> Add to cart</>
+              )}
+            </Button>
+
+            <Button
+              size="lg"
+              variant="outline"
+              className={cn("gap-2", inWishlist && "border-red-300 text-red-500 hover:bg-red-50")}
+              onClick={() => toggleWishlist.mutate({ productId: product._id, inWishlist })}
+            >
+              <Heart size={18} className={cn(inWishlist && "fill-red-500")} />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

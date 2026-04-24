@@ -5,8 +5,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useQueryState, parseAsInteger } from "nuqs";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getBrands, getBrandProducts } from "@/lib/api/brands";
-import { ProductCard } from "@/components/product-card";
-import { ProductGridSkeleton } from "@/components/product-grid";
+import { ProductCard } from "@/components/ProductCard";
+import { ProductGridSkeleton } from "@/components/ProductGrid";
 import { Button } from "@/components/ui/button";
 
 export default function BrandProductsPage() {

@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Eye, ShoppingCart, Check, Star } from "lucide-react";
-import { useCartStore } from "@/lib/store/cart-store";
+import { Eye, ShoppingCart, Check, Star, Heart } from "lucide-react";
+import { useAddToCart, useCart } from "@/lib/hooks/useCart";
+import { useToggleWishlist, useWishlist } from "@/lib/hooks/useWishlist";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -14,10 +15,13 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
-  const addItem = useCartStore((s) => s.addItem);
-  const isInCart = useCartStore((s) => s.isInCart);
-  const isLoading = useCartStore((s) => s.isLoading);
-  const inCart = isInCart(product._id);
+  const { data: cartData } = useCart();
+  const { data: wishlistData } = useWishlist();
+  const addToCart = useAddToCart();
+  const toggleWishlist = useToggleWishlist();
+
+  const inCart = cartData?.data.products.some((p) => p.product._id === product._id) ?? false;
+  const inWishlist = wishlistData?.data.some((p) => p._id === product._id) ?? false;
 
   const discount = product.priceAfterDiscount
     ? (100 - (product.priceAfterDiscount / product.price) * 100).toFixed(1)
@@ -53,11 +57,22 @@ export function ProductCard({ product }: ProductCardProps) {
               "rounded-lg",
               inCart && "bg-green-600 hover:bg-green-700"
             )}
-            onClick={() => !inCart && addItem(product._id)}
-            disabled={isLoading || inCart}
+            onClick={() => !inCart && addToCart.mutate(product._id)}
+            disabled={addToCart.isPending || inCart}
             title={inCart ? "In cart" : "Add to cart"}
           >
             {inCart ? <Check size={16} /> : <ShoppingCart size={16} />}
+          </button>
+          <button
+            className={cn(
+              buttonVariants({ variant: "secondary", size: "icon" }),
+              "rounded-lg",
+              inWishlist && "bg-red-50 text-red-500 hover:bg-red-100"
+            )}
+            onClick={() => toggleWishlist.mutate({ productId: product._id, inWishlist })}
+            title={inWishlist ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            <Heart size={16} className={cn(inWishlist && "fill-red-500")} />
           </button>
         </div>
 
@@ -103,8 +118,8 @@ export function ProductCard({ product }: ProductCardProps) {
               "h-8 w-8 rounded-lg",
               inCart && "border-green-500 bg-green-50 text-green-600 hover:bg-green-100"
             )}
-            onClick={() => !inCart && addItem(product._id)}
-            disabled={isLoading || inCart}
+            onClick={() => !inCart && addToCart.mutate(product._id)}
+            disabled={addToCart.isPending || inCart}
           >
             {inCart ? <Check size={14} /> : <ShoppingCart size={14} />}
           </button>

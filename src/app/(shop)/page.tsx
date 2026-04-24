@@ -5,11 +5,11 @@ import { useQuery } from "@tanstack/react-query";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { getProducts } from "@/lib/api/products";
 import { getBrands } from "@/lib/api/brands";
-import { ProductCard } from "@/components/product-card";
-import { ProductGridSkeleton } from "@/components/product-grid";
-import { HomeCarousel } from "@/components/home-carousel";
-import { SearchBar } from "@/components/search-bar";
-import { SearchFilters } from "@/components/search-filters";
+import { ProductCard } from "@/components/ProductCard";
+import { ProductGridSkeleton } from "@/components/ProductGrid";
+import { HomeCarousel } from "@/components/HomeCarousel";
+import { SearchBar } from "@/components/SearchBar";
+import { SearchFilters } from "@/components/SearchFilters";
 import { Button } from "@/components/ui/button";
 
 export default function HomePage() {

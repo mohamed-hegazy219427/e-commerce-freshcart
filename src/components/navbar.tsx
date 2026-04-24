@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { ShoppingCart, User, LogOut, Package, Home, Tag } from "lucide-react";
-import { useAuthStore } from "@/lib/store/auth-store";
-import { useCartStore } from "@/lib/store/cart-store";
+import { useAuthStore } from "@/lib/store/authStore";
+import { useCart } from "@/lib/hooks/useCart";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -20,8 +20,10 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
-  const count = useCartStore((s) => s.count);
+  const { data: cartData } = useCart();
+  const count = cartData?.numOfCartItems ?? 0;
   const router = useRouter();
+  const pathname = usePathname();
 
   function handleLogout() {
     logout();
@@ -35,13 +37,39 @@ export function Navbar() {
           <img src="/assets/freshcart-logo.svg" alt="FreshCart" className="h-8 w-auto" />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-          <Link href="/" className="flex items-center gap-1 hover:text-primary transition-colors">
-            <Home size={16} /> Home
-          </Link>
-          <Link href="/brands" className="flex items-center gap-1 hover:text-primary transition-colors">
-            <Tag size={16} /> Brands
-          </Link>
+        <nav className="hidden md:flex items-center h-full gap-0">
+          {[
+            { href: "/", label: "Home", icon: Home },
+            { href: "/brands", label: "Brands", icon: Tag },
+          ].map(({ href, label, icon: Icon }) => {
+            const active = pathname === href;
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={cn(
+                  "relative flex items-center gap-2 px-4 h-16 text-sm font-medium transition-colors group",
+                  active ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                <Icon
+                  size={15}
+                  className={cn(
+                    "transition-transform group-hover:scale-110",
+                    active ? "text-primary" : ""
+                  )}
+                />
+                {label}
+                {/* active underline */}
+                <span
+                  className={cn(
+                    "absolute bottom-0 left-3 right-3 h-0.5 rounded-full bg-primary transition-all duration-200",
+                    active ? "opacity-100 scale-x-100" : "opacity-0 scale-x-0 group-hover:opacity-40 group-hover:scale-x-100"
+                  )}
+                />
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">

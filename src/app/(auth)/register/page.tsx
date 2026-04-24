@@ -3,42 +3,27 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { registerSchema, type RegisterFormValues } from "@/lib/validations/register";
-import { registerUser } from "@/lib/api/auth";
-import { useAuthStore } from "@/lib/store/auth-store";
+import { useRegister } from "@/lib/hooks/useAuth";
+import { useAuthStore } from "@/lib/store/authStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function RegisterPage() {
-  const setToken = useAuthStore((s) => s.setToken);
   const user = useAuthStore((s) => s.user);
   const router = useRouter();
+  const register_ = useRegister();
 
   useEffect(() => {
     if (user) router.replace("/");
   }, [user, router]);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<RegisterFormValues>({ resolver: zodResolver(registerSchema) });
-
-  async function onSubmit(values: RegisterFormValues) {
-    try {
-      const res = await registerUser(values);
-      setToken(res.token);
-      toast.success(`Account created! Welcome, ${res.user.name}`);
-      router.push("/");
-    } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } } };
-      toast.error(error?.response?.data?.message ?? "Registration failed");
-    }
-  }
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
@@ -53,32 +38,32 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {[
-            { id: "name", label: "Full name", type: "text", placeholder: "John Doe" },
-            { id: "email", label: "Email", type: "email", placeholder: "you@example.com" },
-            { id: "password", label: "Password", type: "password", placeholder: "" },
-            { id: "rePassword", label: "Confirm password", type: "password", placeholder: "" },
-            { id: "phone", label: "Phone (Egyptian)", type: "tel", placeholder: "01XXXXXXXXX" },
-          ].map(({ id, label, type, placeholder }) => (
+        <form onSubmit={handleSubmit((v) => register_.mutate(v))} className="space-y-4">
+          {(
+            [
+              { id: "name", label: "Full name", type: "text", placeholder: "John Doe" },
+              { id: "email", label: "Email", type: "email", placeholder: "you@example.com" },
+              { id: "password", label: "Password", type: "password", placeholder: "" },
+              { id: "rePassword", label: "Confirm password", type: "password", placeholder: "" },
+              { id: "phone", label: "Phone (Egyptian)", type: "tel", placeholder: "01XXXXXXXXX" },
+            ] as const
+          ).map(({ id, label, type, placeholder }) => (
             <div key={id} className="space-y-2">
               <Label htmlFor={id}>{label}</Label>
               <Input
                 id={id}
                 type={type}
                 placeholder={placeholder}
-                {...register(id as keyof RegisterFormValues)}
+                {...register(id)}
               />
-              {errors[id as keyof RegisterFormValues] && (
-                <p className="text-sm text-destructive">
-                  {errors[id as keyof RegisterFormValues]?.message}
-                </p>
+              {errors[id] && (
+                <p className="text-sm text-destructive">{errors[id]?.message}</p>
               )}
             </div>
           ))}
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Creating account…" : "Create account"}
+          <Button type="submit" className="w-full" disabled={register_.isPending}>
+            {register_.isPending ? "Creating account…" : "Create account"}
           </Button>
         </form>
       </div>

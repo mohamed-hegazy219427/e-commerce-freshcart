@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2 } from "lucide-react";
-import { useCartStore } from "@/lib/store/cart-store";
+import { useRemoveFromCart, useUpdateCartItem } from "@/lib/hooks/useCart";
 import { Button } from "@/components/ui/button";
 import type { CartProduct } from "@/lib/types/api";
 
@@ -12,9 +12,9 @@ interface CartItemRowProps {
 }
 
 export function CartItemRow({ item }: CartItemRowProps) {
-  const removeItem = useCartStore((s) => s.removeItem);
-  const updateItem = useCartStore((s) => s.updateItem);
-  const isLoading = useCartStore((s) => s.isLoading);
+  const remove = useRemoveFromCart();
+  const update = useUpdateCartItem();
+  const isLoading = remove.isPending || update.isPending;
 
   return (
     <div className="flex gap-4 py-4">
@@ -42,7 +42,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
       <div className="flex flex-col items-end justify-between shrink-0">
         <Button
           variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"
-          onClick={() => removeItem(item.product._id)}
+          onClick={() => remove.mutate(item.product._id)}
           disabled={isLoading}
           aria-label="Remove item"
         >
@@ -52,7 +52,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
         <div className="flex items-center border rounded-md">
           <Button
             variant="ghost" size="icon" className="h-8 w-8 rounded-none"
-            onClick={() => item.count > 1 && updateItem(item.product._id, item.count - 1)}
+            onClick={() => item.count > 1 && update.mutate({ productId: item.product._id, count: item.count - 1 })}
             disabled={isLoading || item.count <= 1}
             aria-label="Decrease quantity"
           >
@@ -61,7 +61,7 @@ export function CartItemRow({ item }: CartItemRowProps) {
           <span className="w-8 text-center text-sm font-medium">{item.count}</span>
           <Button
             variant="ghost" size="icon" className="h-8 w-8 rounded-none"
-            onClick={() => updateItem(item.product._id, item.count + 1)}
+            onClick={() => update.mutate({ productId: item.product._id, count: item.count + 1 })}
             disabled={isLoading}
             aria-label="Increase quantity"
           >

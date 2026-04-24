@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuthStore } from "@/lib/store/auth-store";
-import { ProtectedRoute } from "@/components/protected-route";
+import { useAuthStore } from "@/lib/store/authStore";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
