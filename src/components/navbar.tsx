@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
+import Image from "next/image";
 import { ShoppingCart, User, LogOut, Package, Home, Tag, Heart } from "lucide-react";
 import { useAuthStore } from "@/lib/store/authStore";
 import { useCart } from "@/lib/hooks/useCart";
@@ -34,7 +35,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/">
-          <img src="/assets/freshcart-logo.svg" alt="FreshCart" className="h-8 w-auto" />
+          <Image src="/assets/freshcart-logo.svg" alt="FreshCart" width={200} height={40} />
         </Link>
 
         <nav className="hidden md:flex items-center h-full gap-0">
